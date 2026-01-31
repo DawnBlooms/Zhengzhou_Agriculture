@@ -1,2 +1,0 @@
-insert into manager.admin (id, username, password, name, avatar, role, phone, email)
-values  (1, 'admin', '123456', '管理员', 'http://localhost:9090/static/files/1769765213940-8b70-kcysmrw5280926.jpg', 'ADMIN', '13677889922', 'admin@xm.com');

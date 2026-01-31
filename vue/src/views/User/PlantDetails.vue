@@ -9,7 +9,7 @@
       </div>
       <div class="content-section">
         <div class="user-info">
-          <img :src="plant.user_avatar || 'https://via.placeholder.com/100'" alt="User Avatar" class="user-avatar" />
+          <img :src="plant.farmer_avatar || 'https://via.placeholder.com/100'" alt="User Avatar" class="user-avatar" />
           <div class="user-details">
             <p class="username">{{ plant.username }}</p>
             <p class="email">{{ plant.email }}</p>
