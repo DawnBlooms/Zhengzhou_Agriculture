@@ -1,0 +1,185 @@
+<template>
+  <div class="container">
+    <div class="login-card">
+      <div class="title">欢迎注册郑在种助农工程</div>
+
+      <el-form :model="form" :rules="rules" ref="formRef">
+
+        <el-form-item prop="username">
+          <el-input
+            prefix-icon="el-icon-user"
+            placeholder="请输入账号"
+            v-model="form.username"
+            clearable
+          />
+        </el-form-item>
+
+        <el-form-item prop="password">
+          <el-input
+            prefix-icon="el-icon-lock"
+            placeholder="请输入密码"
+            show-password
+            v-model="form.password"
+          />
+        </el-form-item>
+
+        <el-form-item prop="confirmPass">
+          <el-input
+            prefix-icon="el-icon-lock"
+            placeholder="请确认密码"
+            show-password
+            v-model="form.confirmPass"
+          />
+        </el-form-item>
+
+        <!-- ⭐ 新增：角色选择（与后端 role 字段呼应） -->
+        <el-form-item prop="role" class="role-select">
+          <el-radio-group v-model="form.role">
+            <el-radio label="ADMIN">管理员</el-radio>
+            <el-radio label="USER">用户</el-radio>
+            <el-radio label="FARMER">农户</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button class="login-btn" @click="register">
+            注 册
+          </el-button>
+        </el-form-item>
+
+        <div class="footer">
+          已有账号？<a href="/">登录</a>
+        </div>
+      </el-form>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Register",
+  data() {
+    const validatePassword = (rule, confirmPass, callback) => {
+      if (!confirmPass) {
+        callback(new Error("请确认密码"));
+      } else if (confirmPass !== this.form.password) {
+        callback(new Error("两次输入的密码不一致"));
+      } else {
+        callback();
+      }
+    };
+
+    return {
+      form: {
+        username: "",
+        password: "",
+        confirmPass: "",
+        role: "ADMIN",   // ⭐ 默认角色，与登录页一致
+      },
+      rules: {
+        username: [
+          { required: true, message: "请输入账号", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+        ],
+        confirmPass: [
+          { validator: validatePassword, trigger: "blur" },
+        ],
+        role: [
+          { required: true, message: "请选择角色", trigger: "change" },
+        ],
+      },
+    };
+  },
+  methods: {
+    register() {
+      this.$refs.formRef.validate((valid) => {
+        if (valid) {
+          this.$request.post("/web/register", this.form).then((res) => {
+            if (res.code === "200") {
+              this.$message.success("注册成功");
+              this.$router.push("/");
+            } else {
+              this.$message.error(res.msg);
+            }
+          });
+        }
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("@/assets/imgs/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 16%;
+}
+
+/* 卡片 */
+.login-card {
+  width: 420px;
+  padding: 35px 40px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+/* 标题 */
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 28px;
+  letter-spacing: 2px;
+  line-height: 1.4;
+
+  /* 🔥 高级感核心 */
+  background: linear-gradient(135deg, #2a60c9, #4f8dff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 角色选择 */
+.role-select {
+  text-align: center;
+}
+
+/* 按钮 */
+.login-btn {
+  width: 100%;
+  height: 42px;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #2a60c9, #3f8cff);
+  border: none;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+}
+
+/* 底部 */
+.footer {
+  text-align: right;
+  font-size: 14px;
+  color: #666;
+}
+
+.footer a {
+  color: #2a60c9;
+}
+</style>
